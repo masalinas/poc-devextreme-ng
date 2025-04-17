@@ -18,7 +18,9 @@ export class AppComponent {
   dataSource: any;
 
   constructor(private http: HttpClient) {
-    this.loadAsyncCustomStore();
+    //this.loadAsyncCustomStore();
+    //this.loadSyncCustomStore();
+    this.loadAsyncDataSource();
     //this.loadSyncDataSource();
   }
 
@@ -70,8 +72,8 @@ export class AppComponent {
 
   private loadAsyncDataSource() {
     this.dataSource = new DataSource({
-      key: 'id',
       store: new CustomStore({
+        key: 'id',
         load: async (loadOptions) => {
           const page = (loadOptions.skip ?? 0) / (loadOptions.take ?? 6) + 1;
           const pageSize = loadOptions.take ?? 6;
@@ -93,8 +95,8 @@ export class AppComponent {
     
   private loadSyncDataSource() {
     this.dataSource = new DataSource({
-      key: 'id',
       store: new CustomStore({
+        key: 'id',
         loadMode: "processed",
         load: async (loadOptions) => {
           const page = (loadOptions.skip ?? 0) / (loadOptions.take ?? 6) + 1;
