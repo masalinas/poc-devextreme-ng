@@ -45,29 +45,6 @@ export class AppComponent {
     });
   }
 
-  private loadAsyncDataSource() {
-    this.dataSource = new DataSource({
-      key: 'id',
-      store: new CustomStore({
-        load: async (loadOptions) => {
-          const page = (loadOptions.skip ?? 0) / (loadOptions.take ?? 6) + 1;
-          const pageSize = loadOptions.take ?? 6;
-      
-          return this.http
-            .get<any>(`https://reqres.in/api/users?page=${page}&per_page=${pageSize}`)
-            .toPromise()
-            .then((data) => ({
-              data: data.data,
-              totalCount: data.total,
-            }))
-            .catch((error) => {
-              throw 'Data loading error';
-            });
-        },
-      })      
-    });
-  }
-
   private loadSyncCustomStore() {
     this.dataSource = new CustomStore({
       key: 'id',
@@ -91,6 +68,29 @@ export class AppComponent {
     });
   }
 
+  private loadAsyncDataSource() {
+    this.dataSource = new DataSource({
+      key: 'id',
+      store: new CustomStore({
+        load: async (loadOptions) => {
+          const page = (loadOptions.skip ?? 0) / (loadOptions.take ?? 6) + 1;
+          const pageSize = loadOptions.take ?? 6;
+      
+          return this.http
+            .get<any>(`https://reqres.in/api/users?page=${page}&per_page=${pageSize}`)
+            .toPromise()
+            .then((data) => ({
+              data: data.data,
+              totalCount: data.total,
+            }))
+            .catch((error) => {
+              throw 'Data loading error';
+            });
+        },
+      })      
+    });
+  }
+    
   private loadSyncDataSource() {
     this.dataSource = new DataSource({
       key: 'id',
