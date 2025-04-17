@@ -1,6 +1,12 @@
 <dx-data-grid
   [dataSource]="dataSource"
   [remoteOperations]="true"
+  [editing]="{
+    mode: 'popup',
+    allowUpdating: true,
+    allowAdding: true,
+    allowDeleting: true
+  }"  
   [showBorders]="true">
     <!-- Column Config-->
     <dxi-column dataField="id" caption="Id"></dxi-column>

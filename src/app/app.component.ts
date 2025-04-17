@@ -5,23 +5,32 @@ import { DataSource } from 'devextreme/common/data';
 import CustomStore from 'devextreme/data/custom_store';
 import { DxDataGridModule } from 'devextreme-angular';
 
-import { firstValueFrom } from 'rxjs';
+import { catchError, finalize, firstValueFrom, map, of } from 'rxjs';
+
+import { UserService } from './services/user.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [DxDataGridModule],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrl: './app.component.scss',
+  providers: [
+    UserService
+  ]
 })
 export class AppComponent {
   dataSource: any;
 
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient,
+    private userService: UserService
+  ) {
     //this.loadAsyncCustomStore();
     //this.loadSyncCustomStore();
-    this.loadAsyncDataSource();
+    //this.loadAsyncDataSource();
     //this.loadSyncDataSource();
+    this.loadFromService();
   }
 
   private loadAsyncCustomStore() {
@@ -42,6 +51,9 @@ export class AppComponent {
           ))
           .catch((error) => {
             throw 'Data loading error';
+          })
+          .finally(() => {
+            console.log("Data loaded");
           });
       },
     });
@@ -116,6 +128,69 @@ export class AppComponent {
           }
         },
       })
+    });
+  }
+
+  private loadFromService() {
+    this.dataSource = new DataSource({
+      store: new CustomStore({
+        key: 'id',
+        load: (loadOptions) => {
+          return firstValueFrom(
+            this.userService.get(loadOptions)
+              .pipe(
+                map((response: any) =>{
+                  console.log('Data loaded')
+
+                  return {
+                    data: response.data,
+                    totalCount: response.total,
+                  }
+                }),
+                catchError((err) => {
+                  console.error('Load failed', err);
+
+                  return of([]);
+                })
+              )
+          );
+        },
+        insert: (values) =>
+          firstValueFrom(
+            this.userService.insert(values)
+              .pipe(
+                catchError((err) => {
+                  console.error('Insert failed', err)
+
+                  return of(null);
+                }),
+                finalize(() => console.log('Finalize loaded')),
+              )
+        ),        
+        update: (key, values) =>
+          firstValueFrom(
+            this.userService.update(key, values)
+              .pipe(
+                catchError((err) => {
+                  console.error('Update failed', err);
+                  return of(null);
+                }),                
+                finalize(() => console.log('Finalize loaded')),
+              )
+        ),
+        remove: (key) =>
+          firstValueFrom(
+            this.userService.remove(key)
+              .pipe(
+                catchError((err) => {
+                  console.error('Remove failed', err);
+
+                  return of();
+                }),
+                finalize(() => console.log('Finalize loaded')),
+              )
+        ),                
+      })      
     });
   }
 }
