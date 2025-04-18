@@ -151,7 +151,10 @@ export class AppComponent {
                   console.error('Load failed', err);
 
                   return of([]);
-                })
+                }),
+                finalize(() => 
+                  console.log('Finalize loaded')
+                )
               )
           );
         },
@@ -164,7 +167,9 @@ export class AppComponent {
 
                   return of(null);
                 }),
-                finalize(() => console.log('Finalize loaded')),
+                finalize(() => 
+                  console.log('Finalize loaded')
+                ),
               )
         ),        
         update: (key, values) =>
@@ -175,7 +180,9 @@ export class AppComponent {
                   console.error('Update failed', err);
                   return of(null);
                 }),                
-                finalize(() => console.log('Finalize loaded')),
+                finalize(() => 
+                  console.log('Finalize loaded')
+                ),
               )
         ),
         remove: (key) =>
@@ -187,7 +194,9 @@ export class AppComponent {
 
                   return of();
                 }),
-                finalize(() => console.log('Finalize loaded')),
+                finalize(() => 
+                  console.log('Finalize loaded')
+                ),
               )
         ),                
       })      
