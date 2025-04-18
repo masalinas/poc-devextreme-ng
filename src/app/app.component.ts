@@ -5,7 +5,7 @@ import { DataSource } from 'devextreme/common/data';
 import CustomStore from 'devextreme/data/custom_store';
 import { DxDataGridModule } from 'devextreme-angular';
 
-import { catchError, finalize, firstValueFrom, map, of } from 'rxjs';
+import { catchError, finalize, lastValueFrom, map, of } from 'rxjs';
 
 import { UserService } from './services/user.service';
 
@@ -67,7 +67,7 @@ export class AppComponent {
         const pageSize = loadOptions.take ?? 6;
 
         try {
-          const response = await firstValueFrom(
+          const response = await lastValueFrom(
             this.http.get<any>(`https://reqres.in/api/users?page=${page}&per_page=${pageSize}`)
           );
 
@@ -115,7 +115,7 @@ export class AppComponent {
           const pageSize = loadOptions.take ?? 6;
   
           try {
-            const response = await firstValueFrom(
+            const response = await lastValueFrom(
               this.http.get<any>(`https://reqres.in/api/users?page=${page}&per_page=${pageSize}`)
             );
   
@@ -136,7 +136,7 @@ export class AppComponent {
       store: new CustomStore({
         key: 'id',
         load: (loadOptions) => {
-          return firstValueFrom(
+          return lastValueFrom(
             this.userService.get(loadOptions)
               .pipe(
                 map((response: any) =>{
@@ -156,7 +156,7 @@ export class AppComponent {
           );
         },
         insert: (values) =>
-          firstValueFrom(
+          lastValueFrom(
             this.userService.insert(values)
               .pipe(
                 catchError((err) => {
@@ -168,7 +168,7 @@ export class AppComponent {
               )
         ),        
         update: (key, values) =>
-          firstValueFrom(
+          lastValueFrom(
             this.userService.update(key, values)
               .pipe(
                 catchError((err) => {
@@ -179,7 +179,7 @@ export class AppComponent {
               )
         ),
         remove: (key) =>
-          firstValueFrom(
+          lastValueFrom(
             this.userService.remove(key)
               .pipe(
                 catchError((err) => {
