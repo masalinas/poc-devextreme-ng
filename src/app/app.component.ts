@@ -12,9 +12,9 @@ import { UserService } from './services/user.service';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [DxDataGridModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
+  imports: [DxDataGridModule],
   providers: [
     UserService
   ]
