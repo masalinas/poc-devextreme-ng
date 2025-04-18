@@ -49,8 +49,13 @@ export class AppComponent {
               totalCount: data.total,
             }
           ))
-          .catch((error) => {
-            throw 'Data loading error';
+          .catch((err) => {
+            console.error('Load failed', err);
+
+            return {
+              data: [],
+              totalCount: 0,
+            };
           })
           .finally(() => {
             console.log("Data loaded");
@@ -75,7 +80,7 @@ export class AppComponent {
             data: response.data,
             totalCount: response.total,
           };
-        } catch (error) {
+        } catch (err) {
           throw 'Data loading error';
         }
       },
@@ -93,12 +98,19 @@ export class AppComponent {
           return this.http
             .get<any>(`https://reqres.in/api/users?page=${page}&per_page=${pageSize}`)
             .toPromise()
-            .then((data) => ({
-              data: data.data,
-              totalCount: data.total,
-            }))
-            .catch((error) => {
-              throw 'Data loading error';
+            .then((data) => (
+              {
+                data: data.data,
+                totalCount: data.total,
+              }
+            ))
+            .catch((err) => {
+              console.error('Load failed', err);
+
+              return {
+                data: [],
+                totalCount: 0,
+              };
             });
         },
       })      
@@ -123,8 +135,13 @@ export class AppComponent {
               data: response.data,
               totalCount: response.total,
             };
-          } catch (error) {
-            throw 'Data loading error';
+          } catch (err) {
+            console.error('Load failed', err);
+
+            return {
+              data: [],
+              totalCount: 0,
+            };
           }
         },
       })
